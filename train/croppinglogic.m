@@ -3,7 +3,6 @@ for i = 1:25
     folder_name = 'data/';
     fn = sprintf ( '%sinput_%02d.jpg%', folder_name, i);
     f = imread ( fn );
-    
     gr = rgb2gray(f);
     edgeG = edge(gr);
     figure('name','Edge Image');
