@@ -3,11 +3,18 @@ for i = 1:25
     folder_name = 'data/';
     fn = sprintf ( '%sinput_%02d.jpg%', folder_name, i);
     f = imread ( fn );
-    gr = rgb2gray(f);
-    edgeG = edge(gr);
-    figure('name','Edge Image');
-    imshow(edgeG);
-    
+%     gr = rgb2gray(f);
+%     edgeG = edge(gr);
+%     figure('name','Edge Image');
+%     imshow(edgeG);
+    h = histeq(f);
+    g = imadjust(rgb2gray(h));
+%     figure;
+%     imshow(h);
+    edgeG = edge(g);
+    edgeG = bwareaopen(edgeG,15);
+    figure;
+%     imshow(edgeG);
     %     [R,C] = size(edgeG);
     [R,C] = size(edgeG);
     d = ceil(sqrt(R^2 + C^2)); 

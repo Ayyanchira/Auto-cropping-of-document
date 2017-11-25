@@ -10,7 +10,7 @@ for i = 1:25
 %     figure;
 %     imshow(h);
     edgeG = edge(g);
-    BW2 = bwareaopen(edgeG,10);
+    BW2 = bwareaopen(edgeG,15);
     figure;
     imshow(BW2);
 end
