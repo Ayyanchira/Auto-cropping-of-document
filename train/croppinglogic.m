@@ -12,7 +12,7 @@ for i = 1:25
 %     figure;
 %     imshow(h);
     edgeG = edge(g);
-    edgeG = bwareaopen(edgeG,15);
+    edgeG = bwareaopen(edgeG,10);
     figure;
      imshow(edgeG);
      [R,C] = size(edgeG);
@@ -26,7 +26,6 @@ for i = 1:25
      leftImage = h(1:R,1:ceil(C/2));
      rightImage = h(1:R,ceil(C/2):C);
      bottomImage = h(ceil(R/2):R,1:C);
-     
      
      accumUp = accumOfHorizontalLines(upperEdgeImage,d);
      accumLeft = accumOfVerticalLines(leftEdgeImage,d);
