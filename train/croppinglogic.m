@@ -1,5 +1,5 @@
 for i = 1:25
-    
+    close all;
     folder_name = 'data/';
     fn = sprintf ( '%sinput_%02d.jpg%', folder_name, i);
     f = imread ( fn );
@@ -14,7 +14,7 @@ for i = 1:25
     edgeG = edge(g);
     edgeG = bwareaopen(edgeG,15);
     figure;
-%     imshow(edgeG);
+     imshow(edgeG);
     %     [R,C] = size(edgeG);
     [R,C] = size(edgeG);
     d = ceil(sqrt(R^2 + C^2)); 
@@ -33,17 +33,39 @@ for i = 1:25
     figure('name','Accumulator Array');
     title('Accumulator Array without non-max suppression');
     imshow(accum(1:10:end,:),[]); colormap jet;
-    close all;
+%     close all;
+    %% Implementing Non-Max Suppression
+% figure('name','Edge Image for non-max suppression');
+% title('Edge Image for non-max suppression');
+% imshow(edgeG);
+
+[I,J] = size(accum);
+accumCopy = zeros(I,J);
+windowSize = 20;
+for r = 1:I
+    for c = 1:J
+        rowMin = max(1,r-windowSize);
+        rowMax = min(I,r+windowSize);
+        colMin = max(1,c-windowSize);
+        colMax = min(J,c+windowSize);
+        
+        windowImage = accum(rowMin:rowMax,colMin:colMax);
+        maxOfWindow = max(max(windowImage));
+        if accum(r,c) == maxOfWindow
+            accumCopy(r,c) = maxOfWindow;
+        end
+    end
+end
     %% Edges without non max suppression
-    sortedMaxValues = sort(accum(:),'descend');
+    sortedMaxValues = sort(accumCopy(:),'descend');
     top4 = sortedMaxValues(1:4);
     figure('name','Accumulator Array');
     title('Accumulator Array without non-max suppression');
-    imshow(accum(1:10:end,:),[]); colormap jet;
+    imshow(accumCopy(1:10:end,:),[]); colormap jet;
     colorIm = f;
     for line = 1:4
         lineValue = top4(line);
-        [I,J] = find(accum == lineValue);
+        [I,J] = find(accumCopy == lineValue);
         k = I(1);
         %get actual rho
         rho = k-d-1;
