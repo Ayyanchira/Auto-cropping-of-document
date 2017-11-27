@@ -39,13 +39,21 @@ for i = 1:25
      inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
 
      parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
-     parrallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
+     parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
 %      leftUpCHeck = slopeLeft * slopeUp;
 %      fprintf('product of left edge and top edge is %d',leftUpCHeck);
-     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationRightEdge);
-     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationRightEdge);
-     perpendicularCheck3 = ;
-     perpendicularCheck4 = ;
+     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationTopEdge);
+     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationBottomEdge);
+     perpendicularCheck3 = abs(inclinationRightEdge - inclinationTopEdge);
+     perpendicularCheck4 = abs(inclinationRightEdge - inclinationBottomEdge);
+     
+     if (parallelcheckVertical<10) && (parallelcheckHorizontal < 10)
+         if perpendicularCheck1 > 80 && perpendicularCheck2 > 80 && perpendicularCheck3 > 80 && perpendicularCheck4 > 80
+            fprintf('Everything seems OK');
+         else
+             fprintf('Needs to be looked upon for edge detection');
+         end
+     end
      
      
      %% collect lines and check if they form rectangle shape
@@ -55,8 +63,8 @@ end
 
 
 function accum = accumOfVerticalLines(halfImage,d)
-%     [R,C] = size(halfImage);
-%     d = ceil(sqrt(R^2 + C^2));
+    [R,C] = size(halfImage);
+    d = ceil(sqrt(R^2 + C^2));
     accum = zeros(2*d+1,180);
     
     [ri, ci] = find(halfImage == 1);
@@ -73,7 +81,7 @@ function accum = accumOfHorizontalLines(halfImage,d)
 %     [R,C] = size(halfImage);
 %     d = ceil(sqrt(R^2 + C^2));
     accum = zeros(2*d+1,180);
-    
+    accumCopy = accum;
     [ri, ci] = find(halfImage == 1);
     
     for j = 1:numel(ri)
@@ -86,6 +94,9 @@ function accum = accumOfHorizontalLines(halfImage,d)
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
     end
+    fprintf('Reached here');
+    maxVal = max(max(accum))
+    accumCopyx,y] = find(accum == maxVal);
 end
 
 % function accum = performNonMaxSuppression(accumulatorArray)
