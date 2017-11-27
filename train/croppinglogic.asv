@@ -46,6 +46,7 @@ for i = 1:25
 %      inclinationRightEdge = showlines(accumRight,rightImage,d);
 %      inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
 
+<<<<<<< HEAD
 %      parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
 %      parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
 % %      leftUpCHeck = slopeLeft * slopeUp;
@@ -64,6 +65,16 @@ for i = 1:25
 %              %check for white conditions OR apply default
 %          end
 %      end
+=======
+     parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
+     parrallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
+%      leftUpCHeck = slopeLeft * slopeUp;
+%      fprintf('product of left edge and top edge is %d',leftUpCHeck);
+     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationRightEdge);
+     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationRightEdge);
+     perpendicularCheck3 = ;
+     perpendicularCheck4 = ;
+>>>>>>> parent of 2561ff2... trying to combine accumulato
      
      
      %% collect lines and check if they form rectangle shape
@@ -94,7 +105,7 @@ function accumCopy = accumOfHorizontalLines(halfImage,d)
 %     [R,C] = size(halfImage);
 %     d = ceil(sqrt(R^2 + C^2));
     accum = zeros(2*d+1,180);
-    accumCopy = accum;
+    
     [ri, ci] = find(halfImage == 1);
     
     for j = 1:numel(ri)
@@ -107,10 +118,13 @@ function accumCopy = accumOfHorizontalLines(halfImage,d)
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
     end
+<<<<<<< HEAD
     fprintf('Reached here');
     maxVal = max(max(accum));
     [accumCopyX,accumCopyY] = find(accum == maxVal);
     accumCopy(accumCopyX,accumCopyY) = maxVal;
+=======
+>>>>>>> parent of 2561ff2... trying to combine accumulato
 end
 
 % function accum = performNonMaxSuppression(accumulatorArray)

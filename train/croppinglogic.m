@@ -17,16 +17,10 @@ for i = 1:25
      imshow(edgeG);
      [R,C] = size(edgeG);
      d = ceil(sqrt(R^2 + C^2)); 
-     
-     upperEdgeImage = zeros(R,C);
-     leftEdgeImage = zeros(R,C);
-     rightEdgeImage = zeros(R,C);
-     bottomEdgemage = zeros(R,C);
-     
-     upperEdgeImage(1:ceil(R/2),1:C) = edgeG(1:ceil(R/2),1:C);
-     leftEdgeImage(1:R,1:ceil(C/2)) = edgeG(1:R,1:ceil(C/2));
-     rightEdgeImage(1:R,ceil(C/2):C) = edgeG(1:R,ceil(C/2):C);
-     bottomEdgemage(ceil(R/2):R,1:C) = edgeG(ceil(R/2):R,1:C);
+     upperEdgeImage = edgeG(1:ceil(R/2),1:C);
+     leftEdgeImage = edgeG(1:R,1:ceil(C/2));
+     rightEdgeImage = edgeG(1:R,ceil(C/2):C);
+     bottomEdgemage = edgeG(ceil(R/2):R,1:C);
      
      upperImage = h(1:ceil(R/2),1:C);
      leftImage = h(1:R,1:ceil(C/2));
@@ -37,6 +31,7 @@ for i = 1:25
      accumLeft = accumOfVerticalLines(leftEdgeImage,d);
      accumRight = accumOfVerticalLines(rightEdgeImage,d);
      accumBottom = accumOfHorizontalLines(bottomEdgemage,d);
+<<<<<<< HEAD
 %      accumCopy = zeros(2*d+1,180);
      accumAll = accumUp + accumLeft + accumRight + accumBottom;
      sortedMaxValues = sort(accumAll,'descend');
@@ -45,25 +40,31 @@ for i = 1:25
 %      inclinationLeftEdge = showlines(accumLeft,leftImage,d);
 %      inclinationRightEdge = showlines(accumRight,rightImage,d);
 %      inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
+=======
+     accumCopy = zeros(2*d+1,180);
+     
+     inclinationTopEdge = showlines(accumUp,upperImage,d);
+     inclinationLeftEdge = showlines(accumLeft,leftImage,d);
+     inclinationRightEdge = showlines(accumRight,rightImage,d);
+     inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
+>>>>>>> parent of 2561ff2... trying to combine accumulato
 
-%      parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
-%      parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
-% %      leftUpCHeck = slopeLeft * slopeUp;
-% %      fprintf('product of left edge and top edge is %d',leftUpCHeck);
-%      perpendicularCheck1 = abs(inclinationLeftEdge - inclinationTopEdge);
-%      perpendicularCheck2 = abs(inclinationLeftEdge - inclinationBottomEdge);
-%      perpendicularCheck3 = abs(inclinationRightEdge - inclinationTopEdge);
-%      perpendicularCheck4 = abs(inclinationRightEdge - inclinationBottomEdge);
-%      
-%      if (parallelcheckVertical<10) && (parallelcheckHorizontal < 10)
-%          if perpendicularCheck1 > 80 && perpendicularCheck2 > 80 && perpendicularCheck3 > 80 && perpendicularCheck4 > 80
-%             fprintf('Everything seems OK');
-%          else
-%              fprintf('Needs to be looked upon for edge detection');
-%              
-%              %check for white conditions OR apply default
-%          end
-%      end
+     parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
+     parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
+%      leftUpCHeck = slopeLeft * slopeUp;
+%      fprintf('product of left edge and top edge is %d',leftUpCHeck);
+     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationTopEdge);
+     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationBottomEdge);
+     perpendicularCheck3 = abs(inclinationRightEdge - inclinationTopEdge);
+     perpendicularCheck4 = abs(inclinationRightEdge - inclinationBottomEdge);
+     
+     if (parallelcheckVertical<10) && (parallelcheckHorizontal < 10)
+         if perpendicularCheck1 > 80 && perpendicularCheck2 > 80 && perpendicularCheck3 > 80 && perpendicularCheck4 > 80
+            fprintf('Everything seems OK');
+         else
+             fprintf('Needs to be looked upon for edge detection');
+         end
+     end
      
      
      %% collect lines and check if they form rectangle shape
@@ -76,7 +77,7 @@ function accum = accumOfVerticalLines(halfImage,d)
 %     [R,C] = size(halfImage);
 %     d = ceil(sqrt(R^2 + C^2));
     accum = zeros(2*d+1,180);
-    accumCopy = accum;
+    
     [ri, ci] = find(halfImage == 1);
     
     for j = 1:numel(ri)
@@ -85,16 +86,13 @@ function accum = accumOfVerticalLines(halfImage,d)
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
     end
-     maxVal = max(max(accum));
-    [accumCopyX,accumCopyY] = find(accum == maxVal);
-    accumCopy(accumCopyX,accumCopyY) = maxVal;
 end
 
-function accumCopy = accumOfHorizontalLines(halfImage,d)
+function accum = accumOfHorizontalLines(halfImage,d)
 %     [R,C] = size(halfImage);
 %     d = ceil(sqrt(R^2 + C^2));
     accum = zeros(2*d+1,180);
-    accumCopy = accum;
+    
     [ri, ci] = find(halfImage == 1);
     
     for j = 1:numel(ri)
@@ -107,10 +105,6 @@ function accumCopy = accumOfHorizontalLines(halfImage,d)
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
     end
-    fprintf('Reached here');
-    maxVal = max(max(accum));
-    [accumCopyX,accumCopyY] = find(accum == maxVal);
-    accumCopy(accumCopyX,accumCopyY) = maxVal;
 end
 
 % function accum = performNonMaxSuppression(accumulatorArray)
@@ -142,8 +136,8 @@ function inclination = showlines(accumCopy,image,d)
     title('Accumulator Array without non-max suppression');
     imshow(accumCopy(1:10:end,:),[]); colormap jet;
     colorIm = image;
-    for line = 1:4
-        lineValue = top4(line);
+%     for line = 1:4
+        lineValue = top4(1);
         [I,J] = find(accumCopy == lineValue);
         k = I(1);
         %get actual rho
@@ -158,12 +152,11 @@ function inclination = showlines(accumCopy,image,d)
             x1 = [x1,x];
             y1 = [y1,y];
         end
-        fprintf('inserting line\n');
         colorIm = insertShape(colorIm,'line',[x1(1),y1(1),x1(end),y1(end)]);
 %         inclination = (y1(end)-y1(1))/(x1(end)-x1(1));
         inclination = theta;
         
-     end
+%     end
     figure('name','Lines without non-max suppression');
     title('Top 4 lines without non-max suppression');
     imshow(colorIm);
