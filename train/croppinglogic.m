@@ -39,7 +39,7 @@ for i = 1:25
      accumBottom = accumOfHorizontalLines(bottomEdgemage,d);
 %      accumCopy = zeros(2*d+1,180);
      accumAll = accumUp + accumLeft + accumRight + accumBottom;
-     
+     sortedMaxValues = sort(accumAll,'descend');
      showlines(accumAll,f,d);
 %      inclinationTopEdge = showlines(accumUp,upperImage,d);
 %      inclinationLeftEdge = showlines(accumLeft,leftImage,d);
@@ -136,7 +136,7 @@ end
 
 function inclination = showlines(accumCopy,image,d)
     [R,C] = size(image);
-    sortedMaxValues = sort(accumCopy(:),'descend');
+    [sortedMaxValuesI,sortedMaxValuesJ] = sort(accumCopy,'descend');
     top4 = sortedMaxValues(1:4);
     figure('name','Accumulator Array');
     title('Accumulator Array without non-max suppression');
