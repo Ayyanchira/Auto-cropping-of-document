@@ -31,23 +31,17 @@ for i = 1:25
      accumLeft = accumOfVerticalLines(leftEdgeImage,d);
      accumRight = accumOfVerticalLines(rightEdgeImage,d);
      accumBottom = accumOfHorizontalLines(bottomEdgemage,d);
-<<<<<<< HEAD
+
 %      accumCopy = zeros(2*d+1,180);
      accumAll = accumUp + accumLeft + accumRight + accumBottom;
      sortedMaxValues = sort(accumAll,'descend');
      showlines(accumAll,f,d);
-%      inclinationTopEdge = showlines(accumUp,upperImage,d);
-%      inclinationLeftEdge = showlines(accumLeft,leftImage,d);
-%      inclinationRightEdge = showlines(accumRight,rightImage,d);
-%      inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
-=======
      accumCopy = zeros(2*d+1,180);
      
      inclinationTopEdge = showlines(accumUp,upperImage,d);
      inclinationLeftEdge = showlines(accumLeft,leftImage,d);
      inclinationRightEdge = showlines(accumRight,rightImage,d);
      inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
->>>>>>> parent of 2561ff2... trying to combine accumulato
 
      parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
      parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
