@@ -33,11 +33,30 @@ for i = 1:25
      accumBottom = accumOfHorizontalLines(bottomEdgemage,d);
      accumCopy = zeros(2*d+1,180);
      
-     showlines(accumUp,upperImage,d);
-     showlines(accumLeft,leftImage,d);
-     showlines(accumRight,rightImage,d);
-     showlines(accumBottom,bottomImage,d);
+     inclinationTopEdge = showlines(accumUp,upperImage,d);
+     inclinationLeftEdge = showlines(accumLeft,leftImage,d);
+     inclinationRightEdge = showlines(accumRight,rightImage,d);
+     inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
 
+     parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
+     parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
+%      leftUpCHeck = slopeLeft * slopeUp;
+%      fprintf('product of left edge and top edge is %d',leftUpCHeck);
+     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationTopEdge);
+     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationBottomEdge);
+     perpendicularCheck3 = abs(inclinationRightEdge - inclinationTopEdge);
+     perpendicularCheck4 = abs(inclinationRightEdge - inclinationBottomEdge);
+     
+     if (parallelcheckVertical<10) && (parallelcheckHorizontal < 10)
+         if perpendicularCheck1 > 80 && perpendicularCheck2 > 80 && perpendicularCheck3 > 80 && perpendicularCheck4 > 80
+            fprintf('Everything seems OK');
+         else
+             fprintf('Needs to be looked upon for edge detection');
+         end
+     end
+     
+     
+     %% collect lines and check if they form rectangle shape
 
 end
 % 
@@ -51,7 +70,7 @@ function accum = accumOfVerticalLines(halfImage,d)
     [ri, ci] = find(halfImage == 1);
     
     for j = 1:numel(ri)
-        for theta = 60:120
+        for theta = 50:140
             rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
@@ -70,7 +89,7 @@ function accum = accumOfHorizontalLines(halfImage,d)
             rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
-        for theta = 145:180
+        for theta = 135:180
             rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
             accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
         end
@@ -98,7 +117,7 @@ end
 % 
 % end
 
-function showlines(accumCopy,image,d)
+function inclination = showlines(accumCopy,image,d)
     [R,C] = size(image);
     sortedMaxValues = sort(accumCopy(:),'descend');
     top4 = sortedMaxValues(1:4);
@@ -123,6 +142,9 @@ function showlines(accumCopy,image,d)
             y1 = [y1,y];
         end
         colorIm = insertShape(colorIm,'line',[x1(1),y1(1),x1(end),y1(end)]);
+%         inclination = (y1(end)-y1(1))/(x1(end)-x1(1));
+        inclination = theta;
+        
 %     end
     figure('name','Lines without non-max suppression');
     title('Top 4 lines without non-max suppression');
