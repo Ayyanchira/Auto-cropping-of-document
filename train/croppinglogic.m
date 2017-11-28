@@ -22,10 +22,10 @@ for i = 1:25
      rightEdgeImage = edgeG(1:R,ceil(C/2):C);
      bottomEdgemage = edgeG(ceil(R/2):R,1:C);
      
-     upperImage = h(1:ceil(R/2),1:C);
-     leftImage = h(1:R,1:ceil(C/2));
-     rightImage = h(1:R,ceil(C/2):C);
-     bottomImage = h(ceil(R/2):R,1:C);
+%      upperImage = h(1:ceil(R/2),1:C);
+%      leftImage = h(1:R,1:ceil(C/2));
+%      rightImage = h(1:R,ceil(C/2):C);
+%      bottomImage = h(ceil(R/2):R,1:C);
      
      accumUp = accumOfHorizontalLines(upperEdgeImage,d);
      accumLeft = accumOfVerticalLines(leftEdgeImage,d);
