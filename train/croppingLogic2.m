@@ -12,10 +12,13 @@ for i = 1:25
     imshow(edgeG);
     [R,C] = size(edgeG);
     lineImage = zeros(R,C);
-    lineImage = showLine(edgeG,lineImage,1);
-    lineImage = showLine(edgeG,lineImage,2);
-    lineImage = showLine(edgeG,lineImage,3);
-    lineImage = showLine(edgeG,lineImage,4);
+    
+    [lineImage,theta] = showLine(edgeG,lineImage,2);
+    adjacentAngle = mod(theta + 90,180);
+    oppositeAngle = theta;
+%     lineImage = showLine(edgeG,lineImage,1);
+%     lineImage = showLine(edgeG,lineImage,3);
+%     lineImage = showLine(edgeG,lineImage,4);
     
 %      upperEdgeImage = edgeG(1:ceil(R/2),1:C);
 %      leftEdgeImage = edgeG(1:R,1:ceil(C/2));
@@ -24,7 +27,7 @@ for i = 1:25
     
 end
 
-function lineImageOut = showLine(image,lineImageIn,part)
+function [lineImageOut,theta] = showLine(image,lineImageIn,part)
     [R,C] = size(image);
     d = ceil(sqrt(R^2 + C^2)); 
     portionImage = zeros(R,C);
@@ -75,7 +78,7 @@ function lineImageOut = showLine(image,lineImageIn,part)
             end
         end
     end
-    
+    imagesc(accum);
     sortedMaxValues = sort(accum(:),'descend');
     lineValue = sortedMaxValues(1);
     [I,J] = find(accum == lineValue);
@@ -90,6 +93,7 @@ function lineImageOut = showLine(image,lineImageIn,part)
         x1 = [x1,x];
         y1 = [y1,y];
     end
-    lineImageOut = insertShape(lineImageIn,'line',[x1(1),y1(1),x1(end),y1(end)]);
+    endCordinate = min(x1(end),800);
+    lineImageOut = insertShape(lineImageIn,'line',[x1(1),y1(1),x1(endCordinate),y1(endCordinate)]);
     imshow(lineImageOut);
 end
