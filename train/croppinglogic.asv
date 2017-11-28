@@ -33,19 +33,27 @@ for i = 1:25
      accumBottom = accumOfHorizontalLines(bottomEdgemage,d);
      accumCopy = zeros(2*d+1,180);
      
-     inclinationTopEdge = showlines(accumUp,upperImage,d);
-     inclinationLeftEdge = showlines(accumLeft,leftImage,d);
-     inclinationRightEdge = showlines(accumRight,rightImage,d);
-     inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
+     inclinationTopEdge = showlines(accumUp,upperImage,d,1);
+     inclinationLeftEdge = showlines(accumLeft,leftImage,d,2);
+     inclinationRightEdge = showlines(accumRight,rightImage,d,3);
+     inclinationBottomEdge = showlines(accumBottom,bottomImage,d,4);
 
      parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
-     parrallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
+     parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
 %      leftUpCHeck = slopeLeft * slopeUp;
 %      fprintf('product of left edge and top edge is %d',leftUpCHeck);
-     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationRightEdge);
-     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationRightEdge);
-     perpendicularCheck3 = ;
-     perpendicularCheck4 = ;
+     perpendicularCheck1 = abs(inclinationLeftEdge - inclinationTopEdge);
+     perpendicularCheck2 = abs(inclinationLeftEdge - inclinationBottomEdge);
+     perpendicularCheck3 = abs(inclinationRightEdge - inclinationTopEdge);
+     perpendicularCheck4 = abs(inclinationRightEdge - inclinationBottomEdge);
+     
+     if (parallelcheckVertical<10) && (parallelcheckHorizontal < 10)
+         if perpendicularCheck1 > 80 && perpendicularCheck2 > 80 && perpendicularCheck3 > 80 && perpendicularCheck4 > 80
+            fprintf('Everything seems OK');
+         else
+             fprintf('Needs to be looked upon for edge detection');
+         end
+     end
      
      
      %% collect lines and check if they form rectangle shape
@@ -109,8 +117,9 @@ end
 % 
 % end
 
-function inclination = showlines(accumCopy,image,d)
+function inclination = showlines(accumCopy,image,d,part)
     [R,C] = size(image);
+    blank = zeros(R,C);
     sortedMaxValues = sort(accumCopy(:),'descend');
     top4 = sortedMaxValues(1:4);
     figure('name','Accumulator Array');
@@ -133,7 +142,16 @@ function inclination = showlines(accumCopy,image,d)
             x1 = [x1,x];
             y1 = [y1,y];
         end
-        colorIm = insertShape(colorIm,'line',[x1(1),y1(1),x1(end),y1(end)]);
+        if part == 1 || part == 2
+            colorIm = insertShape(colorIm,'line',[x1(1),y1(1),x1(end),y1(end)]);
+        elseif part == 3
+            colorIm = insertShape(colorIm,'line',[x1(1)+ceil(R/2),y1(1),x1(end)+ceil(R/2),y1(end)]);
+        elseif part == 4
+            colorIm = insertShape(colorIm,'line',[x1(1),y1(1)+ceil(C/2),x1(end),y1(end)+ceil(C/2)]);
+        end
+            
+            
+        
 %         inclination = (y1(end)-y1(1))/(x1(end)-x1(1));
         inclination = theta;
         

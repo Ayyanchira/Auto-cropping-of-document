@@ -33,10 +33,11 @@ for i = 1:25
      accumBottom = accumOfHorizontalLines(bottomEdgemage,d);
      accumCopy = zeros(2*d+1,180);
      
-     inclinationTopEdge = showlines(accumUp,upperImage,d);
-     inclinationLeftEdge = showlines(accumLeft,leftImage,d);
-     inclinationRightEdge = showlines(accumRight,rightImage,d);
-     inclinationBottomEdge = showlines(accumBottom,bottomImage,d);
+     blank = zeros(R,C);
+     blank = showlines(accumUp,blank,d,1);
+     blank = showlines(accumLeft,blank,d,2);
+     blank = showlines(accumRight,blank,d,3);
+     blank = showlines(accumBottom,blank,d,4);
 
      parallelcheckVertical = abs(inclinationLeftEdge - inclinationRightEdge);
      parallelcheckHorizontal = abs(inclinationTopEdge - inclinationBottomEdge);
@@ -117,14 +118,15 @@ end
 % 
 % end
 
-function inclination = showlines(accumCopy,image,d)
+function blank = showlines(accumCopy,image,d,part)
     [R,C] = size(image);
+    blank = image;
     sortedMaxValues = sort(accumCopy(:),'descend');
     top4 = sortedMaxValues(1:4);
     figure('name','Accumulator Array');
     title('Accumulator Array without non-max suppression');
     imshow(accumCopy(1:10:end,:),[]); colormap jet;
-    colorIm = image;
+%     colorIm = ;
 %     for line = 1:4
         lineValue = top4(1);
         [I,J] = find(accumCopy == lineValue);
@@ -141,12 +143,21 @@ function inclination = showlines(accumCopy,image,d)
             x1 = [x1,x];
             y1 = [y1,y];
         end
-        colorIm = insertShape(colorIm,'line',[x1(1),y1(1),x1(end),y1(end)]);
+        if part == 1 || part == 2
+            blank = insertShape(blank,'line',[x1(1),y1(1),x1(end),y1(end)]);
+        elseif part == 3
+            blank = insertShape(blank,'line',[x1(1)+ceil(R/2),y1(1),x1(end)+ceil(R/2),y1(end)]);
+        elseif part == 4
+            blank = insertShape(blank,'line',[x1(1),y1(1)+ceil(C/2),x1(end),y1(end)+ceil(C/2)]);
+        end
+            
+            
+        
 %         inclination = (y1(end)-y1(1))/(x1(end)-x1(1));
-        inclination = theta;
+%         inclination = theta;
         
 %     end
     figure('name','Lines without non-max suppression');
     title('Top 4 lines without non-max suppression');
-    imshow(colorIm);
+    imshow(blank);
 end
