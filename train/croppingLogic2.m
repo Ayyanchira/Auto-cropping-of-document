@@ -3,7 +3,7 @@ for i = 1:25
     close all;
     folder_name = 'data/';
     fn = sprintf ( '%sinput_%02d.jpg%', folder_name, i);
-    f = imread ( fn );
+    f = imresize(imread ( fn ),0.5);
     h = histeq(f);
     g = imadjust(rgb2gray(h));
 %     bn = imbinarize(g);
@@ -139,13 +139,9 @@ function [lineImageOut,theta,x1,y1] = showLine(image,lineImageIn,part,angle)
         x1 = [x1,x];
         y1 = [y1,y];
     end
-    if part == 2
-        endCordinate = min(x1(end),800);
-    else
-        endCordinate = x1(end);
-    end
     
-    lineImageOut = insertShape(lineImageIn,'line',[x1(1),y1(1),x1(floor(endCordinate)/2),y1(floor(endCordinate)/2),x1(endCordinate),y1(endCordinate)]);
+    endCordinate = x1(end);    
+    lineImageOut = insertShape(lineImageIn,'line',[x1(1),y1(1),x1(floor(endCordinate/2)),y1(floor(endCordinate/2)),x1(endCordinate),y1(endCordinate)]);
     imshow(lineImageOut);
     
 end
