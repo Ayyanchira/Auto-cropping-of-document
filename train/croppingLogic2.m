@@ -6,6 +6,7 @@ for i = 1:25
     f = imread ( fn );
     h = histeq(f);
     g = imadjust(rgb2gray(h));
+%     bn = imbinarize(g);
     edgeG = edge(g);
     edgeG = bwareaopen(edgeG,10);
 
@@ -13,27 +14,23 @@ for i = 1:25
     [R,C] = size(edgeG);
     lineImage = zeros(R,C);
     
-    [lineImage,theta] = showLine(edgeG,g,2,0);
+    [lineImage,theta,leftLineXs,leftLineYs] = showLine(edgeG,g,2,0);
     adjacentAngle = mod(theta + 90,180);
     if adjacentAngle > 90 
        adjacentAngle = adjacentAngle - 180; 
     end
     oppositeAngle = theta;
-    [lineImage,~] = showLine(edgeG,lineImage,1,adjacentAngle);
-    [lineImage,~] = showLine(edgeG,lineImage,3,oppositeAngle);
-    [lineImage,~] = showLine(edgeG,lineImage,4,adjacentAngle);
-%     lineImage = showLine(edgeG,lineImage,1);
-%     lineImage = showLine(edgeG,lineImage,3);
-%     lineImage = showLine(edgeG,lineImage,4);
-    
-%      upperEdgeImage = edgeG(1:ceil(R/2),1:C);
-%      leftEdgeImage = edgeG(1:R,1:ceil(C/2));
-%      rightEdgeImage = edgeG(1:R,ceil(C/2):C);
-%      bottomEdgemage = edgeG(ceil(R/2):R,1:C);
-    
+    [lineImage,~,topLineXs,topLineYs] = showLine(edgeG,lineImage,1,adjacentAngle);
+    [lineImage,~,rightLineXs,rightLineYs] = showLine(edgeG,lineImage,3,oppositeAngle);
+    [lineImage,~,bottomLineXs,bottomLineYs] = showLine(edgeG,lineImage,4,adjacentAngle);
+
+    [topleftCornerX,topLeftCornerY] = polyxpoly(topLineXs,topLineYs,leftLineXs,leftLineYs);
+    [topRightCornerX,topRightCornerY] = polyxpoly(topLineXs,topLineYs,rightLineXs,rightLineYs);
+    [bottomLeftCornerX,bottomLeftCornerY] = polyxpoly(bottomLineXs,bottomLineYs,leftLineXs,leftLineYs);
+    [bottomRightCornerX,bottomRightCornerY] = polyxpoly(bottomLineXs,bottomLineYs,rightLineXs,rightLineYs);
 end
 
-function [lineImageOut,theta] = showLine(image,lineImageIn,part,angle)
+function [lineImageOut,theta,x1,y1] = showLine(image,lineImageIn,part,angle)
     [R,C] = size(image);
     d = ceil(sqrt(R^2 + C^2)); 
     portionImage = zeros(R,C);
