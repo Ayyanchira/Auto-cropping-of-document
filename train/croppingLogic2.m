@@ -13,7 +13,7 @@ for i = 1:25
     [R,C] = size(edgeG);
     lineImage = zeros(R,C);
     
-    [lineImage,theta] = showLine(edgeG,lineImage,2,0);
+    [lineImage,theta] = showLine(edgeG,g,2,0);
     adjacentAngle = mod(theta + 90,180);
     if adjacentAngle > 90 
        adjacentAngle = adjacentAngle - 180; 
@@ -84,7 +84,7 @@ function [lineImageOut,theta] = showLine(image,lineImageIn,part,angle)
             end
         end
     elseif part == 3
-        portionImage(1:R,ceil(C/2):C) = image(1:R,ceil(C/2):C);
+        portionImage(1:R,ceil(C*(5/8)):C) = image(1:R,ceil(C*(5/8)):C);
         [ri, ci] = find(portionImage == 1);
         for j = 1:numel(ri)
             for theta = angle-10:angle+10
@@ -110,7 +110,7 @@ function [lineImageOut,theta] = showLine(image,lineImageIn,part,angle)
                 end
             end
             if (perform == 2)
-                for theta = 180-abs(angle)-4:180-abs(angle) + 4
+                for theta = 180-abs(angle)-10:180-abs(angle) + 10
                     rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
                     accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
                 end
