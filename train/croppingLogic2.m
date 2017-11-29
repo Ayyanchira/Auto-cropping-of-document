@@ -13,9 +13,15 @@ for i = 1:25
     [R,C] = size(edgeG);
     lineImage = zeros(R,C);
     
-    [lineImage,theta] = showLine(edgeG,lineImage,2);
+    [lineImage,theta] = showLine(edgeG,lineImage,2,0);
     adjacentAngle = mod(theta + 90,180);
+    if adjacentAngle > 90 
+       adjacentAngle = adjacentAngle - 180; 
+    end
     oppositeAngle = theta;
+    [lineImage,~] = showLine(edgeG,lineImage,1,adjacentAngle);
+    [lineImage,~] = showLine(edgeG,lineImage,3,oppositeAngle);
+    [lineImage,~] = showLine(edgeG,lineImage,4,adjacentAngle);
 %     lineImage = showLine(edgeG,lineImage,1);
 %     lineImage = showLine(edgeG,lineImage,3);
 %     lineImage = showLine(edgeG,lineImage,4);
@@ -27,7 +33,7 @@ for i = 1:25
     
 end
 
-function [lineImageOut,theta] = showLine(image,lineImageIn,part)
+function [lineImageOut,theta] = showLine(image,lineImageIn,part,angle)
     [R,C] = size(image);
     d = ceil(sqrt(R^2 + C^2)); 
     portionImage = zeros(R,C);
@@ -36,14 +42,36 @@ function [lineImageOut,theta] = showLine(image,lineImageIn,part)
     if part == 1
         portionImage(1:ceil(R/2),1:C) = image(1:ceil(R/2),1:C);
         [ri, ci] = find(portionImage == 1);
+        if angle > 10 && angle < 60
+            perform = 1; % perform right only
+        elseif angle < -10 && angle 
+            perform = 2; % perform left only
+        else
+            perform = 3; % perform both
+        end
+        
         for j = 1:numel(ri)
-            for theta = 1:35
-                rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
-                accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+            if (perform == 1)
+                for theta = angle-10:angle+10
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                end
             end
-            for theta = 135:180
-                rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
-                accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+            if (perform == 2)
+                for theta = 180-abs(angle)-10:180-abs(angle) + 10
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                end
+            end
+            if perform == 3
+                 for theta = 1:10
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                 end
+                for theta = 170:180
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                end
             end
         end
     elseif part == 2
@@ -59,7 +87,7 @@ function [lineImageOut,theta] = showLine(image,lineImageIn,part)
         portionImage(1:R,ceil(C/2):C) = image(1:R,ceil(C/2):C);
         [ri, ci] = find(portionImage == 1);
         for j = 1:numel(ri)
-            for theta = 50:140
+            for theta = angle-10:angle+10
                 rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
                 accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
             end
@@ -67,14 +95,35 @@ function [lineImageOut,theta] = showLine(image,lineImageIn,part)
     elseif part == 4
         portionImage(ceil(R/2):R,1:C) = image(ceil(R/2):R,1:C);
         [ri, ci] = find(portionImage == 1);
+        if angle > 10
+            perform = 1; % perform right only
+        elseif angle < -10
+            perform = 2; % perform left only
+        else
+            perform = 3; % perform both
+        end
         for j = 1:numel(ri)
-            for theta = 1:35
-                rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
-                accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+            if (perform == 1)
+                for theta = angle-10:angle+10
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                end
             end
-            for theta = 135:180
-                rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
-                accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+            if (perform == 2)
+                for theta = 180-abs(angle)-4:180-abs(angle) + 4
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                end
+            end
+            if perform == 3
+                 for theta = 1:10
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                 end
+                for theta = 170:180
+                    rho = ceil((ri(j) *cosd(theta-1)) + (ci(j)*(sind(theta-1))));
+                    accum(rho+d+1,theta) = accum(rho+d+1,theta)+1;
+                end
             end
         end
     end
@@ -93,7 +142,13 @@ function [lineImageOut,theta] = showLine(image,lineImageIn,part)
         x1 = [x1,x];
         y1 = [y1,y];
     end
-    endCordinate = min(x1(end),800);
-    lineImageOut = insertShape(lineImageIn,'line',[x1(1),y1(1),x1(endCordinate),y1(endCordinate)]);
+    if part == 2
+        endCordinate = min(x1(end),800);
+    else
+        endCordinate = x1(end);
+    end
+    
+    lineImageOut = insertShape(lineImageIn,'line',[x1(1),y1(1),x1(floor(endCordinate)/2),y1(floor(endCordinate)/2),x1(endCordinate),y1(endCordinate)]);
     imshow(lineImageOut);
+    
 end
